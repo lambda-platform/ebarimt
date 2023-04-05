@@ -5,3 +5,6 @@
 go get github.com/lambda-platform/ebarimt
 
 ## Powered By Developer team of Lambda Platform.
+
+
+### [REST API example](https://github.com/lambda-platform/ebarimt-rest-api)
