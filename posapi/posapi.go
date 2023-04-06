@@ -76,7 +76,7 @@ type PosAPI struct {
 }
 
 func NewPosAPI(libPath string) (*PosAPI, error) {
-	C.dlopen(C.CString(libPath), C.RTLD_NOW)
+	//C.dlopen(C.CString(libPath), C.RTLD_NOW)
 	handle := C.dlopen(C.CString(libPath), C.RTLD_NOW)
 	if handle == nil {
 		return nil, fmt.Errorf("Failed to load shared library: %s", libPath)

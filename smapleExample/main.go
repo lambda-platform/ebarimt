@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/lambda-platform/ebarimt/posapi"
 )
@@ -14,11 +13,10 @@ func main() {
 	}
 
 	info, _ := api.GetInformation()
-	//api.CheckApi()
-	//api.SendData()
-	//api.SendData()
 
-	input := posapi.PutInput{}
+	fmt.Println(info.RegisterNo)
+
+	/*input := posapi.PutInput{}
 	json.Unmarshal([]byte(`{
 		"amount":"1100.00",
 			"bankTransactions":[],
@@ -63,8 +61,6 @@ func main() {
 
 	fmt.Println(out.QRData)
 	fmt.Println(out.ErrorCode)
-	fmt.Println(out.Message)
-
-	fmt.Println(info.RegisterNo)
+	fmt.Println(out.Message)*/
 
 }
