@@ -49,17 +49,44 @@ type PutOutput struct {
 	BankTransactions []bankTransactions `json:"bankTransactions"`
 }
 
-type PutInput struct {
-	Success           bool   `json:"success"`
-	RegisterNo        string `json:"registerNo"`
-	BillID            string `json:"billId"`
-	Date              string `json:"date"`
-	MacAddress        string `json:"macAddress"`
-	InternalCode      string `json:"internalCode"`
-	BillType          string `json:"billType"`
-	QRData            string `json:"qrData"`
-	Lottery           string `json:"lottery"`
-	LotteryWarningMsg string `json:"lotteryWarningMsg"`
+type Barimt struct {
+	Amount           string            `json:"amount"`
+	Vat              string            `json:"vat"`
+	CashAmount       string            `json:"cashAmount"`
+	NonCashAmount    string            `json:"nonCashAmount"`
+	CityTax          string            `json:"cityTax"`
+	DistrictCode     string            `json:"districtCode"`
+	PosNo            string            `json:"posNo"`
+	CustomerNo       string            `json:"customerNo"`
+	BillType         string            `json:"billType"`
+	BillIDSuffix     string            `json:"billIdSuffix"`
+	ReturnBillID     string            `json:"returnBillId"`
+	TaxType          string            `json:"taxType"`
+	InvoiceID        string            `json:"invoiceId"`
+	ReportMonth      string            `json:"reportMonth"`
+	BranchNo         string            `json:"branchNo"`
+	Stocks           []Stock           `json:"stocks"`
+	BankTransactions []BankTransaction `json:"bankTransactions"`
+}
+
+type Stock struct {
+	Code        string `json:"code"`
+	Name        string `json:"name"`
+	MeasureUnit string `json:"measureUnit"`
+	Qty         string `json:"qty"`
+	UnitPrice   string `json:"unitPrice"`
+	TotalAmount string `json:"totalAmount"`
+	CityTax     string `json:"cityTax"`
+	Vat         string `json:"vat"`
+	BarCode     string `json:"barCode"`
+}
+
+type BankTransaction struct {
+	Rrn          string `json:"rrn"`
+	BankID       string `json:"bankId"`
+	TerminalID   string `json:"terminalId"`
+	ApprovalCode string `json:"approvalCode"`
+	Amount       string `json:"amount"`
 }
 
 type Stocks struct {
