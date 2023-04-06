@@ -30,23 +30,43 @@ type InformationOutput struct {
 }
 
 type PutInput struct {
-	Amount           string             `json:"amount"`
-	Vat              string             `json:"vat"`
-	CashAmount       string             `json:"cashAmount"`
-	NonCashAmount    string             `json:"nonCashAmount"`
-	CityTax          string             `json:"cityTax"`
-	DistrictCode     string             `json:"districtCode"`
-	PosNo            string             `json:"dosNo"`
-	CustomerNo       string             `json:"customerNo"`
-	BillType         string             `json:"billType"`
-	BillIdSuffix     string             `json:"billIdSuffix"`
-	ReturnBillId     string             `json:"returnBillId"`
-	TaxType          string             `json:"taxType"`
-	InvoiceID        string             `json:"invoiceId"`
-	ReportMonth      string             `json:"reportMonth"`
-	BranchNo         string             `json:"branchNo"`
-	Stocks           []Stocks           `json:"stocks"`
-	BankTransactions []bankTransactions `json:"bankTransactions"`
+	Amount           string            `json:"amount"`
+	Vat              string            `json:"vat"`
+	CashAmount       string            `json:"cashAmount"`
+	NonCashAmount    string            `json:"nonCashAmount"`
+	CityTax          string            `json:"cityTax"`
+	DistrictCode     string            `json:"districtCode"`
+	PosNo            string            `json:"posNo"`
+	CustomerNo       string            `json:"customerNo"`
+	BillType         string            `json:"billType"`
+	BillIDSuffix     string            `json:"billIdSuffix"`
+	ReturnBillID     string            `json:"returnBillId"`
+	TaxType          string            `json:"taxType"`
+	InvoiceID        string            `json:"invoiceId"`
+	ReportMonth      string            `json:"reportMonth"`
+	BranchNo         string            `json:"branchNo"`
+	Stocks           []Stock           `json:"stocks"`
+	BankTransactions []BankTransaction `json:"bankTransactions"`
+}
+
+type Stock struct {
+	Code        string `json:"code"`
+	Name        string `json:"name"`
+	MeasureUnit string `json:"measureUnit"`
+	Qty         string `json:"qty"`
+	UnitPrice   string `json:"unitPrice"`
+	TotalAmount string `json:"totalAmount"`
+	CityTax     string `json:"cityTax"`
+	Vat         string `json:"vat"`
+	BarCode     string `json:"barCode"`
+}
+
+type BankTransaction struct {
+	Rrn          string `json:"rrn"`
+	BankID       string `json:"bankId"`
+	TerminalID   string `json:"terminalId"`
+	ApprovalCode string `json:"approvalCode"`
+	Amount       string `json:"amount"`
 }
 
 type PutOutput struct {
@@ -60,26 +80,6 @@ type PutOutput struct {
 	QRData            string `json:"qrData"`
 	Lottery           string `json:"lottery"`
 	LotteryWarningMsg string `json:"lotteryWarningMsg"`
-}
-
-type Stocks struct {
-	Code        string `json:"code"`
-	Name        string `json:"name"`
-	MeasureUnit string `json:"measureUnit"`
-	Qty         string `json:"qty"`
-	UnitPrice   string `json:"unitPrice"`
-	TotalAmount string `json:"totalAmount"`
-	CityTax     string `json:"cityTax"`
-	Vat         string `json:"vat"`
-	BarCode     string `json:"barCode"`
-}
-
-type bankTransactions struct {
-	Rrn          string `json:"rrn"`
-	BankID       string `json:"bankId"`
-	TerminalID   string `json:"terminalId"`
-	ApprovalCode string `json:"approvalCode"`
-	Amount       string `json:"amount"`
 }
 
 type BillInput struct {
