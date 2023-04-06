@@ -8,3 +8,6 @@ go get github.com/lambda-platform/ebarimt
 
 
 ### [REST API example](https://github.com/lambda-platform/ebarimt-rest-api)
+
+
+### [PosAPI lib installer on Linux](https://github.com/lambda-platform/ebarimt-lib-installer)
