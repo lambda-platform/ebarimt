@@ -141,7 +141,6 @@ func (api *PosAPI) Put(data string) (PutOutput, error) {
 	if resultPtr != nil {
 		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
 	}
-
 	// Parse the JSON result.
 	var response PutOutput
 	err := json.Unmarshal(resultBytes, &response)

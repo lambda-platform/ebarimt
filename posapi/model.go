@@ -80,7 +80,7 @@ type PutOutput struct {
 	QRData            string `json:"qrData"`
 	Lottery           string `json:"lottery"`
 	LotteryWarningMsg string `json:"lotteryWarningMsg"`
-	ErrorCode         string `json:"errorCode"`
+	ErrorCode         int    `json:"errorCode"`
 	Message           string `json:"message"`
 }
 
