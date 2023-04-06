@@ -49,7 +49,7 @@ type PutOutput struct {
 	BankTransactions []bankTransactions `json:"bankTransactions"`
 }
 
-type Barimt struct {
+type PutInput struct {
 	Amount           string            `json:"amount"`
 	Vat              string            `json:"vat"`
 	CashAmount       string            `json:"cashAmount"`
