@@ -3,13 +3,14 @@ package posapi
 /*
 #cgo LDFLAGS: -ldl
 #include <stdlib.h>
+#include <stdio.h>
 #include <dlfcn.h>
 #include "posapi.h"
 
 typedef char* (*get_information_t)();
 typedef char* (*check_api_t)();
 typedef char* (*call_function_t)(const char*, const char*);
-typedef char* (*put_t)(void*, char*);
+typedef char* (*put_t)(const char*);
 typedef char* (*return_bill_t)(const char*);
 typedef char* (*send_data_t)();
 
@@ -37,12 +38,13 @@ char* call_function(void* handle, const char* functionName, const char* params) 
     return call_function(functionName, params);
 }
 
-char* put(void* handle, char* data) {
-    put_t put = (put_t)dlsym(handle, "put");
+char* putF(void* handle, char* data) {
+    put_t putF = (put_t)dlsym(handle, "put");
     if (put == NULL) {
         return "";
     }
-    return put(handle, data);
+    char* result = putF(data);
+    return result;
 }
 
 char* return_bill(void* handle, const char* data) {
@@ -133,17 +135,22 @@ func (api *PosAPI) CallFunction(functionName string, params string) (string, err
 	return string(resultBytes), nil
 }
 
-func (api *PosAPI) Put(data string) (PutOutput, error) {
-	cData := C.CString(data)
+func (api *PosAPI) Put(input PutInput) (PutOutput, error) {
+	jsonBytes, err := json.Marshal(input)
+	if err != nil {
+		return PutOutput{}, err
+	}
+	cData := C.CString(string(jsonBytes))
 	defer C.free(unsafe.Pointer(cData))
+
 	var resultBytes []byte
-	resultPtr := C.put(api.handle, cData)
+	resultPtr := C.putF(api.handle, cData)
 	if resultPtr != nil {
 		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
 	}
 	// Parse the JSON result.
 	var response PutOutput
-	err := json.Unmarshal(resultBytes, &response)
+	err = json.Unmarshal(resultBytes, &response)
 	if err != nil {
 		return PutOutput{}, err
 	}
@@ -151,8 +158,12 @@ func (api *PosAPI) Put(data string) (PutOutput, error) {
 
 }
 
-func (api *PosAPI) ReturnBill(data string) (BillOutput, error) {
-	cData := C.CString(data)
+func (api *PosAPI) ReturnBill(input BillInput) (BillOutput, error) {
+	jsonBytes, err := json.Marshal(input)
+	if err != nil {
+		return BillOutput{}, err
+	}
+	cData := C.CString(string(jsonBytes))
 	defer C.free(unsafe.Pointer(cData))
 	var resultBytes []byte
 	resultPtr := C.return_bill(api.handle, cData)
@@ -162,7 +173,7 @@ func (api *PosAPI) ReturnBill(data string) (BillOutput, error) {
 
 	// Parse the JSON result.
 	var response BillOutput
-	err := json.Unmarshal(resultBytes, &response)
+	err = json.Unmarshal(resultBytes, &response)
 	if err != nil {
 		return BillOutput{}, err
 	}
