@@ -14,18 +14,31 @@ func FormatNumber(n float64) string {
 	return fmt.Sprintf("%.2f", n)
 }
 
-func GetVat(amount float64, withCityTax bool) string {
-	if withCityTax {
-		return FormatNumber((amount / 111) * 10)
+func GetVat(amount float64, withVat bool, withCityTax bool) string {
+	if withVat {
+		if withCityTax {
+			return FormatNumber((amount / 111) * 10)
+		} else {
+			return FormatNumber((amount / 110) * 10)
+		}
 	} else {
-		return FormatNumber((amount / 110) * 10)
+		return "0.00"
 	}
+
 }
 
-func GetWithCityTax(amount float64, witVat bool) string {
-	if witVat {
-		return FormatNumber((amount / 111) * 1)
+func GetWithCityTax(amount float64, withVat bool, withCityTax bool) string {
+	if withVat {
+		if withCityTax {
+			return FormatNumber((amount / 111) * 1)
+		} else {
+			return "0.00"
+		}
 	} else {
-		return FormatNumber((amount / 101) * 1)
+		if withCityTax {
+			return FormatNumber((amount / 101) * 1)
+		} else {
+			return "0.00"
+		}
 	}
 }
