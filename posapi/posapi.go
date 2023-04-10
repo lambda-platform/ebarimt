@@ -40,7 +40,7 @@ char* call_function(void* handle, const char* functionName, const char* params) 
 
 char* putF(void* handle, char* data) {
     put_t putF = (put_t)dlsym(handle, "put");
-    if (put == NULL) {
+    if (putF == NULL) {
         return "";
     }
     char* result = putF(data);
