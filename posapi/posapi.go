@@ -157,6 +157,28 @@ func (api *PosAPI) Put(input PutInput) (PutOutput, error) {
 	return response, nil
 
 }
+func (api *PosAPI) PutBatch(input PutInputBatch) (PutOutput, error) {
+	jsonBytes, err := json.Marshal(input)
+	if err != nil {
+		return PutOutput{}, err
+	}
+	cData := C.CString(string(jsonBytes))
+	defer C.free(unsafe.Pointer(cData))
+
+	var resultBytes []byte
+	resultPtr := C.putF(api.handle, cData)
+	if resultPtr != nil {
+		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
+	}
+	// Parse the JSON result.
+	var response PutOutput
+	err = json.Unmarshal(resultBytes, &response)
+	if err != nil {
+		return PutOutput{}, err
+	}
+	return response, nil
+
+}
 
 func (api *PosAPI) ReturnBill(input BillInput) (BillOutput, error) {
 	jsonBytes, err := json.Marshal(input)

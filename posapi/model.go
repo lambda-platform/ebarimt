@@ -100,3 +100,35 @@ type DataOutput struct {
 	ErrorCode int    `json:"errorCode"`
 	Message   string `json:"message"`
 }
+
+type PutInputBatch struct {
+	Group        bool   `json:"group"`
+	Vat          string `json:"vat"`
+	Amount       string `json:"amount"`
+	BillType     string `json:"billType"`
+	BillIDSuffix string `json:"billIdSuffix"`
+	PosNo        string `json:"posNo"`
+	Bills        []Bill `json:"bills"`
+}
+
+type Bill struct {
+	Amount           string            `json:"amount"`
+	Vat              string            `json:"vat"`
+	CashAmount       string            `json:"cashAmount"`
+	NonCashAmount    string            `json:"nonCashAmount"`
+	CityTax          string            `json:"cityTax"`
+	DistrictCode     string            `json:"districtCode"`
+	PosNo            string            `json:"posNo"`
+	CustomerNo       string            `json:"customerNo"`
+	BillType         string            `json:"billType"`
+	BillIDSuffix     string            `json:"billIdSuffix"`
+	ReturnBillID     string            `json:"returnBillId"`
+	TaxType          string            `json:"taxType"`
+	InvoiceID        string            `json:"invoiceId"`
+	ReportMonth      string            `json:"reportMonth"`
+	BranchNo         string            `json:"branchNo"`
+	Stocks           []Stock           `json:"stocks"`
+	BankTransactions []BankTransaction `json:"bankTransactions"`
+	InternalId       string            `json:"internalId"`
+	RegisterNo       string            `json:"registerNo"`
+}

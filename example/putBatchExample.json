@@ -1,0 +1,76 @@
+{
+  "group": true,
+  "vat": "110.00",
+  "amount": "1210.00",
+  "billType": "1",
+  "billIdSuffix": "123456",
+  "posNo": "1234",
+  "bills": [
+    {
+      "amount":"1100.00",
+      "bankTransactions":[],
+      "billIdSuffix":"123457",
+      "billType":"1",
+      "branchNo":"001",
+      "cashAmount":"0.00",
+      "cityTax":"0.00",
+      "customerNo":"",
+      "districtCode":"24",
+      "invoiceId":"",
+      "nonCashAmount":"1100.00",
+      "posNo":"1234",
+      "reportMonth":"",
+      "returnBillId":"",
+      "stocks":[
+        {
+          "barCode":"1234567890",
+          "cityTax":"0.00",
+          "code":"1234567",
+          "measureUnit":"01",
+          "name":"Хоол",
+          "qty":"1.00",
+          "totalAmount":"1100.00",
+          "unitPrice":"1100.00",
+          "vat":"100.00"
+        }
+      ],
+      "taxType":"",
+      "vat":"100.00",
+      "internalId": "1112",
+      "registerNo": "0000039"
+    },
+    {
+      "amount":"110.00",
+      "bankTransactions":[],
+      "billIdSuffix":"123458",
+      "billType":"1",
+      "branchNo":"001",
+      "cashAmount":"0.00",
+      "cityTax":"0.00",
+      "customerNo":"",
+      "districtCode":"24",
+      "invoiceId":"",
+      "nonCashAmount":"110.00",
+      "posNo":"1234",
+      "reportMonth":"",
+      "returnBillId":"",
+      "stocks":[
+        {
+          "barCode":"1234567890",
+          "cityTax":"0.00",
+          "code":"1234567",
+          "measureUnit":"01",
+          "name":"Хоол",
+          "qty":"1.00",
+          "totalAmount":"110.00",
+          "unitPrice":"110.00",
+          "vat":"10.00"
+        }
+      ],
+      "taxType":"",
+      "vat":"10.00",
+      "internalId": "1112",
+      "registerNo": "0000039"
+    }
+  ]
+}
