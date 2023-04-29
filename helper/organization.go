@@ -1,4 +1,4 @@
-package bill
+package helper
 
 import (
 	"encoding/json"
