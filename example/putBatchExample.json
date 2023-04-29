@@ -4,7 +4,7 @@
   "amount": "1210.00",
   "billType": "1",
   "billIdSuffix": "123456",
-  "posNo": "1234",
+  "posNo": "123456",
   "bills": [
     {
       "amount":"1100.00",
@@ -18,7 +18,7 @@
       "districtCode":"24",
       "invoiceId":"",
       "nonCashAmount":"1100.00",
-      "posNo":"1234",
+      "posNo":"123456",
       "reportMonth":"",
       "returnBillId":"",
       "stocks":[
@@ -51,7 +51,7 @@
       "districtCode":"24",
       "invoiceId":"",
       "nonCashAmount":"110.00",
-      "posNo":"1234",
+      "posNo":"123456",
       "reportMonth":"",
       "returnBillId":"",
       "stocks":[

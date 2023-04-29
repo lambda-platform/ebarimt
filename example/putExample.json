@@ -1,7 +1,7 @@
 {
   "amount":"1100.00",
   "bankTransactions":[],
-  "billIdSuffix":"123459",
+  "billIdSuffix":"123458",
   "billType":"1",
   "branchNo":"001",
   "cashAmount":"0.00",
@@ -10,7 +10,7 @@
   "districtCode":"24",
   "invoiceId":"",
   "nonCashAmount":"1100.00",
-  "posNo":"1234",
+  "posNo":"123456",
   "reportMonth":"",
   "returnBillId":"",
   "stocks":[
