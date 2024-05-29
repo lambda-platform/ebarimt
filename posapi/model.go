@@ -16,76 +16,145 @@ type CheckOutput struct {
 	} `json:"network"`
 }
 
-type InformationOutput struct {
-	RegisterNo string `json:"registerNo"`
-	BranchNo   string `json:"branchNo"`
-	PosID      string `json:"posId"`
-	DBDirPath  string `json:"dbDirPath"`
-	ExtraInfo  struct {
-		CountBill    string `json:"countBill"`
-		CountLottery int    `json:"countLottery"`
-		LastSentDate string `json:"lastSentDate"`
-		PosVersion   string `json:"posVersion"`
-	} `json:"extraInfo"`
+type InformationResponse struct {
+	OperatorName  string `json:"operatorName"`
+	OperatorTIN   string `json:"operatorTIN"`
+	PosId         int    `json:"posId"`
+	PosNo         string `json:"posNo"`
+	Version       string `json:"version"`
+	LastSentDate  string `json:"lastSentDate"`
+	LeftLotteries int    `json:"leftLotteries"`
+	AppInfo       struct {
+		ApplicationDir     string   `json:"applicationDir"`
+		CurrentDir         string   `json:"currentDir"`
+		Database           string   `json:"database"`
+		DatabaseHost       string   `json:"database-host"`
+		SupportedDatabases []string `json:"supported-databases"`
+		WorkDir            string   `json:"workDir"`
+	} `json:"appInfo"`
+	PaymentTypes []struct {
+		Code string `json:"code"`
+		Name string `json:"name"`
+	} `json:"paymentTypes"`
+	Merchants []Merchant `json:"merchants"`
+}
+type Merchant struct {
+	TIN       string `json:"tin"`
+	Name      string `json:"name"`
+	VatPayer  bool   `json:"vatPayer"`
+	Customers []struct {
+		TIN      string `json:"tin"`
+		Name     string `json:"name"`
+		VatPayer bool   `json:"vatPayer"`
+	} `json:"customers"`
+}
+type ReceiptData struct {
+	TotalAmount  string      `json:"totalAmount"`
+	TotalVAT     string      `json:"totalVAT"`
+	TotalCityTax string      `json:"totalCityTax"`
+	DistrictCode string      `json:"districtCode"`
+	MerchantTin  string      `json:"merchantTin"`
+	PosNo        string      `json:"posNo"`
+	CustomerTin  string      `json:"customerTin"`
+	CustomerNo   string      `json:"customerNo"`
+	BranchNo     string      `json:"branchNo"`
+	Type         string      `json:"type"`
+	InActiveID   string      `json:"inactiveId"`
+	InvoiceID    string      `json:"invoiceId"`
+	ReportMonth  *string     `json:"reportMonth"`
+	Data         interface{} `json:"data"`
+	Receipts     []Receipt   `json:"receipts"`
+	Payments     []Payment   `json:"payments"`
+}
+type Receipt struct {
+	TotalAmount   string      `json:"totalAmount"`
+	TotalVAT      string      `json:"totalVAT"`
+	TotalCityTax  string      `json:"totalCityTax"`
+	TaxType       string      `json:"taxType"`
+	MerchantTin   string      `json:"merchantTin"`
+	BankAccountNo string      `json:"bankAccountNo"`
+	Data          interface{} `json:"data"`
+	Items         []Item      `json:"items"`
 }
 
-type PutInput struct {
-	Amount           string            `json:"amount"`
-	Vat              string            `json:"vat"`
-	CashAmount       string            `json:"cashAmount"`
-	NonCashAmount    string            `json:"nonCashAmount"`
-	CityTax          string            `json:"cityTax"`
-	DistrictCode     string            `json:"districtCode"`
-	PosNo            string            `json:"posNo"`
-	CustomerNo       string            `json:"customerNo"`
-	BillType         string            `json:"billType"`
-	BillIDSuffix     string            `json:"billIdSuffix"`
-	ReturnBillID     string            `json:"returnBillId"`
-	TaxType          string            `json:"taxType"`
-	InvoiceID        string            `json:"invoiceId"`
-	ReportMonth      string            `json:"reportMonth"`
-	BranchNo         string            `json:"branchNo"`
-	Stocks           []Stock           `json:"stocks"`
-	BankTransactions []BankTransaction `json:"bankTransactions"`
+type Payment struct {
+	Code         string      `json:"code"`
+	ExchangeCode string      `json:"exchangeCode"`
+	PaidAmount   string      `json:"paidAmount"`
+	Data         interface{} `json:"Data"`
+	Status       string      `json:"Status"`
 }
 
-type Stock struct {
-	Code        string `json:"code"`
-	Name        string `json:"name"`
-	MeasureUnit string `json:"measureUnit"`
-	Qty         string `json:"qty"`
-	UnitPrice   string `json:"unitPrice"`
-	TotalAmount string `json:"totalAmount"`
-	CityTax     string `json:"cityTax"`
-	Vat         string `json:"vat"`
-	BarCode     string `json:"barCode"`
+type Item struct {
+	Name               string      `json:"name"`
+	BarCode            string      `json:"barCode"`
+	BarCodeType        string      `json:"barCodeType"`
+	ClassificationCode string      `json:"classificationCode"`
+	TaxProductCode     string      `json:"taxProductCode"`
+	MeasureUnit        string      `json:"measureUnit"`
+	Qty                string      `json:"qty"`
+	UnitPrice          string      `json:"unitPrice"`
+	TotalVAT           string      `json:"totalVAT"`
+	TotalCityTax       string      `json:"totalCityTax"`
+	TotalAmount        string      `json:"totalAmount"`
+	Data               interface{} `json:"data"`
+}
+type EBarimtResponse struct {
+	ID           string `json:"id"`
+	Version      string `json:"version"`
+	TotalAmount  int    `json:"totalAmount"`
+	TotalVAT     int    `json:"totalVAT"`
+	TotalCityTax int    `json:"totalCityTax"`
+	BranchNo     string `json:"branchNo"`
+	DistrictCode string `json:"districtCode"`
+	MerchantTin  string `json:"merchantTin"`
+	PosNo        string `json:"posNo"`
+	CustomerTin  string `json:"customerTin"`
+	Type         string `json:"type"`
+	InvoiceID    string `json:"invoiceId"`
+	ReportMonth  string `json:"reportMonth"`
+	Receipts     []struct {
+		ID          string `json:"id"`
+		TotalAmount int    `json:"totalAmount"`
+		TaxType     string `json:"taxType"`
+		Items       []struct {
+			Name               string `json:"name"`
+			BarCode            string `json:"barCode"`
+			BarCodeType        string `json:"barCodeType"`
+			ClassificationCode string `json:"classificationCode"`
+			TaxProductCode     string `json:"taxProductCode"`
+			MeasureUnit        string `json:"measureUnit"`
+			Qty                int    `json:"qty"`
+			UnitPrice          int    `json:"unitPrice"`
+			TotalAmount        int    `json:"totalAmount"`
+			TotalVAT           int    `json:"totalVAT"`
+			TotalCityTax       int    `json:"totalCityTax"`
+		} `json:"items"`
+		MerchantTin  string `json:"merchantTin"`
+		TotalVAT     int    `json:"totalVAT"`
+		TotalCityTax int    `json:"totalCityTax"`
+	} `json:"receipts"`
+	Payments []struct {
+		Code         string `json:"code"`
+		ExchangeCode string `json:"exchangeCode"`
+		PaidAmount   int    `json:"paidAmount"`
+		Status       string `json:"status"`
+	} `json:"payments"`
+	PosID   int    `json:"posId"`
+	Status  string `json:"status"`
+	QrData  string `json:"qrData"`
+	Lottery string `json:"lottery"`
+	Date    string `json:"date"`
+	Easy    bool   `json:"easy"`
 }
 
-type BankTransaction struct {
-	Rrn          string `json:"rrn"`
-	BankID       string `json:"bankId"`
-	TerminalID   string `json:"terminalId"`
-	ApprovalCode string `json:"approvalCode"`
-	Amount       string `json:"amount"`
-}
-
-type PutOutput struct {
-	Success           bool   `json:"success"`
-	RegisterNo        string `json:"registerNo"`
-	BillID            string `json:"billId"`
-	Date              string `json:"date"`
-	MacAddress        string `json:"macAddress"`
-	InternalCode      string `json:"internalCode"`
-	BillType          string `json:"billType"`
-	QRData            string `json:"qrData"`
-	Lottery           string `json:"lottery"`
-	LotteryWarningMsg string `json:"lotteryWarningMsg"`
-	ErrorCode         int    `json:"errorCode"`
-	Message           string `json:"message"`
+type EBarimtReceipt struct {
+	ID            string `json:"id"`
+	BankAccountId string `json:"bankAccountId"`
 }
 
 type BillInput struct {
-	ReturnBillID string `json:"returnBillId"`
+	ReturnBillID string `json:"id"`
 	Date         string `json:"date"`
 }
 
@@ -93,42 +162,4 @@ type BillOutput struct {
 	Success   bool   `json:"success"`
 	ErrorCode int    `json:"errorCode"`
 	Message   string `json:"message"`
-}
-
-type DataOutput struct {
-	Success   bool   `json:"success"`
-	ErrorCode int    `json:"errorCode"`
-	Message   string `json:"message"`
-}
-
-type PutInputBatch struct {
-	Group        bool   `json:"group"`
-	Vat          string `json:"vat"`
-	Amount       string `json:"amount"`
-	BillType     string `json:"billType"`
-	BillIDSuffix string `json:"billIdSuffix"`
-	PosNo        string `json:"posNo"`
-	Bills        []Bill `json:"bills"`
-}
-
-type Bill struct {
-	Amount           string            `json:"amount"`
-	Vat              string            `json:"vat"`
-	CashAmount       string            `json:"cashAmount"`
-	NonCashAmount    string            `json:"nonCashAmount"`
-	CityTax          string            `json:"cityTax"`
-	DistrictCode     string            `json:"districtCode"`
-	PosNo            string            `json:"posNo"`
-	CustomerNo       string            `json:"customerNo"`
-	BillType         string            `json:"billType"`
-	BillIDSuffix     string            `json:"billIdSuffix"`
-	ReturnBillID     string            `json:"returnBillId"`
-	TaxType          string            `json:"taxType"`
-	InvoiceID        string            `json:"invoiceId"`
-	ReportMonth      string            `json:"reportMonth"`
-	BranchNo         string            `json:"branchNo"`
-	Stocks           []Stock           `json:"stocks"`
-	BankTransactions []BankTransaction `json:"bankTransactions"`
-	InternalId       string            `json:"internalId"`
-	RegisterNo       string            `json:"registerNo"`
 }

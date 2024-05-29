@@ -17,7 +17,7 @@ func FormatNumber(n float64) string {
 func GetVat(amount float64, withVat bool, withCityTax bool) string {
 	if withVat {
 		if withCityTax {
-			return FormatNumber((amount / 111) * 10)
+			return FormatNumber((amount / 112) * 10)
 		} else {
 			return FormatNumber((amount / 110) * 10)
 		}
@@ -30,13 +30,13 @@ func GetVat(amount float64, withVat bool, withCityTax bool) string {
 func GetCityTax(amount float64, withVat bool, withCityTax bool) string {
 	if withVat {
 		if withCityTax {
-			return FormatNumber((amount / 111) * 1)
+			return FormatNumber((amount / 112) * 2)
 		} else {
 			return "0.00"
 		}
 	} else {
 		if withCityTax {
-			return FormatNumber((amount / 101) * 1)
+			return FormatNumber((amount / 102) * 2)
 		} else {
 			return "0.00"
 		}
@@ -46,7 +46,7 @@ func GetCityTax(amount float64, withVat bool, withCityTax bool) string {
 func Vat(amount float64, withVat bool, withCityTax bool) float64 {
 	if withVat {
 		if withCityTax {
-			return (amount / 111) * 10
+			return (amount / 112) * 10
 		} else {
 			return (amount / 110) * 10
 		}
@@ -59,13 +59,13 @@ func Vat(amount float64, withVat bool, withCityTax bool) float64 {
 func CityTax(amount float64, withVat bool, withCityTax bool) float64 {
 	if withVat {
 		if withCityTax {
-			return (amount / 111) * 1
+			return (amount / 112) * 2
 		} else {
 			return 0
 		}
 	} else {
 		if withCityTax {
-			return (amount / 101) * 1
+			return (amount / 102) * 2
 		} else {
 			return 0
 		}

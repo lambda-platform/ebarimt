@@ -1,218 +1,126 @@
 package posapi
 
-/*
-#cgo LDFLAGS: -ldl
-#include <stdlib.h>
-#include <stdio.h>
-#include <dlfcn.h>
-#include "posapi.h"
-
-typedef char* (*get_information_t)();
-typedef char* (*check_api_t)();
-typedef char* (*call_function_t)(const char*, const char*);
-typedef char* (*put_t)(const char*);
-typedef char* (*return_bill_t)(const char*);
-typedef char* (*send_data_t)();
-
-char* get_information(void* handle) {
-    get_information_t get_information = (get_information_t)dlsym(handle, "getInformation");
-    if (get_information == NULL) {
-        return "";
-    }
-    return get_information();
-}
-
-char* check_api(void* handle) {
-    check_api_t check_api = (check_api_t)dlsym(handle, "checkApi");
-    if (check_api == NULL) {
-        return "";
-    }
-    return check_api();
-}
-
-char* call_function(void* handle, const char* functionName, const char* params) {
-    call_function_t call_function = (call_function_t)dlsym(handle, "callFunction");
-    if (call_function == NULL) {
-        return "";
-    }
-    return call_function(functionName, params);
-}
-
-char* putF(void* handle, char* data) {
-    put_t putF = (put_t)dlsym(handle, "put");
-    if (putF == NULL) {
-        return "";
-    }
-    char* result = putF(data);
-    return result;
-}
-
-char* return_bill(void* handle, const char* data) {
-    return_bill_t return_bill = (return_bill_t)dlsym(handle, "returnBill");
-    if (return_bill == NULL) {
-        return "";
-    }
-    return return_bill(data);
-}
-
-char* send_data(void* handle) {
-    send_data_t send_data = (send_data_t)dlsym(handle, "sendData");
-    if (send_data == NULL) {
-        return "";
-    }
-    return send_data();
-}
-*/
-import "C"
-
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"unsafe"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
 )
 
 type PosAPI struct {
-	handle unsafe.Pointer
+	baseUrl string
 }
 
-func NewPosAPI(libPath string) (*PosAPI, error) {
-	C.dlopen(C.CString(libPath), C.RTLD_NOW)
-	handle := C.dlopen(C.CString(libPath), C.RTLD_NOW)
-	if handle == nil {
-		return nil, fmt.Errorf("Failed to load shared library: %s", libPath)
-	}
-
-	return &PosAPI{handle}, nil
+func NewPosAPI(baseUrl string) (*PosAPI, error) {
+	return &PosAPI{baseUrl}, nil
 }
 
-func (api *PosAPI) Close() {
-	C.dlclose(api.handle)
-}
+func (api *PosAPI) GetInformation() (InformationResponse, error) {
 
-func (api *PosAPI) GetInformation() (InformationOutput, error) {
+	url := api.baseUrl + "/rest/info"
 
-	// Call the getInformation function.
-	var resultBytes []byte
-	resultPtr := C.get_information(api.handle)
-	if resultPtr != nil {
-		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
-	}
-	//
-	// Parse the JSON result.
-	var response InformationOutput
-	err := json.Unmarshal(resultBytes, &response)
+	resp, err := http.Get(url)
 	if err != nil {
-		return InformationOutput{}, err
+		log.Fatalf("Failed to call API: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("Failed to call API, status code: %d", resp.StatusCode)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("Failed to read response body: %v", err)
+	}
+
+	var response InformationResponse
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal JSON: %v", err)
 	}
 
 	return response, nil
 }
-func (api *PosAPI) CheckApi() (CheckOutput, error) {
-	var resultBytes []byte
-	resultPtr := C.check_api(api.handle)
-	if resultPtr != nil {
-		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
-	}
-	// Parse the JSON result.
-	var response CheckOutput
-	err := json.Unmarshal(resultBytes, &response)
+
+func (api *PosAPI) CreateEBarimt(receiptData ReceiptData) (EBarimtResponse, error) {
+	url := api.baseUrl + "/rest/receipt"
+
+	jsonData, err := json.Marshal(receiptData)
 	if err != nil {
-		return CheckOutput{}, err
+		return EBarimtResponse{}, fmt.Errorf("failed to marshal receipt data: %w", err)
 	}
+
+	fmt.Println(url)
+	fmt.Println(string(jsonData))
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return EBarimtResponse{}, fmt.Errorf("failed to call API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+
+		return EBarimtResponse{}, fmt.Errorf("failed to call API, status code: %d", resp.StatusCode)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return EBarimtResponse{}, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	var response EBarimtResponse
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return EBarimtResponse{}, fmt.Errorf("failed to unmarshal JSON: %w", err)
+	}
+
 	return response, nil
 }
 
-func (api *PosAPI) CallFunction(functionName string, params string) (string, error) {
-	cFn := C.CString(functionName)
-	defer C.free(unsafe.Pointer(cFn))
-	cParams := C.CString(params)
-	defer C.free(unsafe.Pointer(cParams))
-	var resultBytes []byte
-	resultPtr := C.call_function(api.handle, cFn, cParams)
-	if resultPtr != nil {
-		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
+func (api *PosAPI) ReturnBill(input BillInput) error {
+	url := api.baseUrl + "/rest/receipt"
+
+	jsonData, err := json.Marshal(input)
+	if err != nil {
+		return fmt.Errorf("failed to marshal receipt data: %w", err)
 	}
-	return string(resultBytes), nil
+
+	fmt.Println(url)
+	fmt.Println(string(jsonData))
+
+	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		os.Exit(1)
+	}
+
+	// Set headers
+	req.Header.Set("Content-Type", "application/json")
+
+	// Perform the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error making request:", err)
+		os.Exit(1)
+	}
+	defer resp.Body.Close()
+	return nil
 }
 
-func (api *PosAPI) Put(input PutInput) (PutOutput, error) {
-	jsonBytes, err := json.Marshal(input)
-	if err != nil {
-		return PutOutput{}, err
-	}
-	cData := C.CString(string(jsonBytes))
-	defer C.free(unsafe.Pointer(cData))
+func (api *PosAPI) SendData() (map[string]interface{}, error) {
+	url := api.baseUrl + "/rest/sendData"
 
-	var resultBytes []byte
-	resultPtr := C.putF(api.handle, cData)
-	if resultPtr != nil {
-		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
-	}
-	// Parse the JSON result.
-	var response PutOutput
-	err = json.Unmarshal(resultBytes, &response)
+	resp, err := http.Get(url)
 	if err != nil {
-		return PutOutput{}, err
+		log.Fatalf("Failed to call API: %v", err)
 	}
-	return response, nil
+	defer resp.Body.Close()
 
-}
-func (api *PosAPI) PutBatch(input PutInputBatch) (PutOutput, error) {
-	jsonBytes, err := json.Marshal(input)
-	if err != nil {
-		return PutOutput{}, err
-	}
-	cData := C.CString(string(jsonBytes))
-	defer C.free(unsafe.Pointer(cData))
-
-	var resultBytes []byte
-	resultPtr := C.putF(api.handle, cData)
-	if resultPtr != nil {
-		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
-	}
-	// Parse the JSON result.
-	var response PutOutput
-	err = json.Unmarshal(resultBytes, &response)
-	if err != nil {
-		return PutOutput{}, err
-	}
-	return response, nil
-
-}
-
-func (api *PosAPI) ReturnBill(input BillInput) (BillOutput, error) {
-	jsonBytes, err := json.Marshal(input)
-	if err != nil {
-		return BillOutput{}, err
-	}
-	cData := C.CString(string(jsonBytes))
-	defer C.free(unsafe.Pointer(cData))
-	var resultBytes []byte
-	resultPtr := C.return_bill(api.handle, cData)
-	if resultPtr != nil {
-		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
-	}
-
-	// Parse the JSON result.
-	var response BillOutput
-	err = json.Unmarshal(resultBytes, &response)
-	if err != nil {
-		return BillOutput{}, err
-	}
-	return response, nil
-}
-
-func (api *PosAPI) SendData() (DataOutput, error) {
-	var resultBytes []byte
-	resultPtr := C.send_data(api.handle)
-	if resultPtr != nil {
-		resultBytes = C.GoBytes(unsafe.Pointer(resultPtr), C.int(len(C.GoString(resultPtr))))
-	}
-	// Parse the JSON result.
-	var response DataOutput
-	err := json.Unmarshal(resultBytes, &response)
-	if err != nil {
-		return DataOutput{}, err
-	}
-	return response, nil
+	return map[string]interface{}{}, nil
 }
