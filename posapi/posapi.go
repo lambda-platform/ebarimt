@@ -46,12 +46,12 @@ func (api *PosAPI) GetInformation() (InformationResponse, error) {
 	return response, nil
 }
 
-func (api *PosAPI) CreateEBarimt(receiptData ReceiptData) (EBarimtResponse, error) {
+func (api *PosAPI) CreateEBarimt(receiptData ReceiptData) (map[string]interface{}, error) {
 	url := api.baseUrl + "/rest/receipt"
 
 	jsonData, err := json.Marshal(receiptData)
 	if err != nil {
-		return EBarimtResponse{}, fmt.Errorf("failed to marshal receipt data: %w", err)
+		return map[string]interface{}{}, fmt.Errorf("failed to marshal receipt data: %w", err)
 	}
 
 	fmt.Println(url)
@@ -59,24 +59,18 @@ func (api *PosAPI) CreateEBarimt(receiptData ReceiptData) (EBarimtResponse, erro
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return EBarimtResponse{}, fmt.Errorf("failed to call API: %w", err)
+		return map[string]interface{}{}, fmt.Errorf("failed to call API: %w", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-
-		return EBarimtResponse{}, fmt.Errorf("failed to call API, status code: %d", resp.StatusCode)
-	}
-
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return EBarimtResponse{}, fmt.Errorf("failed to read response body: %w", err)
+		return map[string]interface{}{}, fmt.Errorf("failed to read response body: %w", err)
 	}
-
-	var response EBarimtResponse
+	var response map[string]interface{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return EBarimtResponse{}, fmt.Errorf("failed to unmarshal JSON: %w", err)
+		return map[string]interface{}{}, fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
 
 	return response, nil
@@ -111,6 +105,7 @@ func (api *PosAPI) ReturnBill(input BillInput) error {
 	}
 	defer resp.Body.Close()
 	return nil
+
 }
 
 func (api *PosAPI) SendData() (map[string]interface{}, error) {
