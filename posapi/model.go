@@ -158,6 +158,7 @@ type EBarimtResponse struct {
 	} `json:"payments"`
 	PosID   int    `json:"posId"`
 	Status  string `json:"status"`
+	Message string `json:"message"`
 	QrData  string `json:"qrData"`
 	Lottery string `json:"lottery"`
 	Date    string `json:"date"`
