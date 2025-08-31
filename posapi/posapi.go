@@ -24,58 +24,54 @@ func (api *PosAPI) GetInformation() (InformationResponse, error) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatalf("Failed to call API: %v", err)
+		log.Println("Failed to call API: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("Failed to call API, status code: %d", resp.StatusCode)
+		log.Println("Failed to call API, status code: %d", resp.StatusCode)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("Failed to read response body: %v", err)
+		log.Println("Failed to read response body: %v", err)
 	}
 
 	var response InformationResponse
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		log.Fatalf("Failed to unmarshal JSON: %v", err)
+		log.Println("Failed to unmarshal JSON: %v", err)
 	}
 
 	return response, nil
 }
 
-func (api *PosAPI) CreateEBarimt(receiptData ReceiptData) (map[string]interface{}, error) {
+func (api *PosAPI) CreateEBarimt(receiptData ReceiptData) (EBarimtResponse, error) {
 	url := api.baseUrl + "/rest/receipt"
-
+	var response EBarimtResponse
 	jsonData, err := json.Marshal(receiptData)
 	if err != nil {
-		return map[string]interface{}{}, fmt.Errorf("failed to marshal receipt data: %w", err)
+		return response, fmt.Errorf("failed to marshal receipt data: %w", err)
 	}
-
-	fmt.Println(url)
-	fmt.Println(string(jsonData))
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return map[string]interface{}{}, fmt.Errorf("failed to call API: %w", err)
+		return response, fmt.Errorf("failed to call API: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return map[string]interface{}{}, fmt.Errorf("failed to read response body: %w", err)
+		return response, fmt.Errorf("failed to read response body: %w", err)
 	}
-	var response map[string]interface{}
+
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return map[string]interface{}{}, fmt.Errorf("failed to unmarshal JSON: %w", err)
+		return response, fmt.Errorf(string(body))
 	}
 
 	return response, nil
 }
-
 func (api *PosAPI) ReturnBill(input BillInput) error {
 	url := api.baseUrl + "/rest/receipt"
 
@@ -113,7 +109,7 @@ func (api *PosAPI) SendData() (map[string]interface{}, error) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatalf("Failed to call API: %v", err)
+		log.Println("Failed to call API: %v", err)
 	}
 	defer resp.Body.Close()
 
